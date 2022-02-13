@@ -10,15 +10,30 @@ select *
 			inner join partido p on p.acronimo = c.acronimo 
 			where p.nome = 'Partido de Direita' and c.votos > 1;
 			
-/*c <- */
+/*c*/
 	select distinct p.nome, avg(age(e.dtnascimento))
 		from candidato c 
 			inner join partido p on p.acronimo = c.acronimo 
 			inner join eleitor e on e.id = c.id 
 			group by p.nome
 			having  avg > 30;
+	select *
+		from(
+			select acronimo, avg(date_part('years',age(e.dtnascimento))) as media
+				from candidato c 
+					inner join eleitor e on e.id = c.id 
+					group by acronimo
+		) as a
+		where a.media > 30;
 
-/*d*/		
+
+/*d*/	
+	select municipio.descricao, max(date_part('year', age(eleitor.dtnascimento))) 
+		from (eleitor inner join municipio on eleitor.cod=municipio.cod) 
+			group by municipio.descricao
+				order by municipio.descricao desc; 
+
+
 	select distinct on (m.cod) m.descricao , date_part('years', age(e.dtnascimento)) 
 		from eleitor e 
 			inner join municipio m on m.cod = e.cod
@@ -56,7 +71,17 @@ select *
 					where p.acronimo = c.acronimo and m.descricao = 'Beja'
 		 );
 
-/*h <- */	
+/*h*/	
+	select *
+		from (
+			select m.descricao, count(c.id)
+				from municipio m 
+					left outer join candidato c on c.cod = m.cod
+					group by m.descricao
+		) as a
+		order by count desc;
+
+	
 	select *
 		from (
 			select m.descricao, count(c.id)
