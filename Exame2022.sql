@@ -1,16 +1,22 @@
 /*a*/
+lista de candidatos filiados ao partido de esquerda
+
 select * 
 	from candidato c 
 		inner join partido p on p.acronimo = c.acronimo 
 		where p.nome = 'Partido de Esquerda';
 		
 /*b*/
+quantos candidatos do partido de direita obtiveram mais 1 voto
+
 	select *
 		from candidato c 
 			inner join partido p on p.acronimo = c.acronimo 
 			where p.nome = 'Partido de Direita' and c.votos > 1;
 			
 /*c*/
+que partido tem candidatos com uma media de idade superior a 30
+
 	select distinct p.nome, avg(age(e.dtnascimento))
 		from candidato c 
 			inner join partido p on p.acronimo = c.acronimo 
@@ -28,6 +34,8 @@ select *
 
 
 /*d*/	
+qual a idade do eleitor mais velho em cada municipio ordenar pelo eleitor mais velho 
+
 	select municipio.descricao, max(date_part('year', age(eleitor.dtnascimento))) 
 		from (eleitor inner join municipio on eleitor.cod=municipio.cod) 
 			group by municipio.descricao
@@ -41,6 +49,7 @@ select *
 
 			
 /*e*/
+que partidos tem candidatos com uma media de idade superior a 30
 	select *
 		from(
 			select p.nome, avg(date_part('years',age(e.dtnascimento))) as media
@@ -52,6 +61,8 @@ select *
 			where a.media > 30;
 			
 /*f*/
+que municipio nao tiveram candidatos do partido de centro use in
+
 	select distinct on (a.nome) a.nome, a.descricao
 		from(
 			select *
@@ -62,6 +73,8 @@ select *
 		where a.nome not in ('Partido do Centro')
 		
 /*g*/
+que partidos estiveram representados nas eleicoes no municipo de beja use exists
+
 	select p.nome 
 		from partido p 
 		where exists (
@@ -72,6 +85,8 @@ select *
 		 );
 
 /*h*/	
+que municipios tiveram mais candidatos 
+
 	select *
 		from (
 			select m.descricao, count(c.id)
@@ -91,6 +106,8 @@ select *
 		) as a
 		
 /*i*/
+quais sao os codigos dos municipios onde o partido com sigla pd teve maioria
+
 	select *
 		from candidato c 
 		where c.acronimo = 1 and c.votos > (
@@ -99,7 +116,9 @@ select *
 					inner join candidato c on c.cod = m.cod
 				);
 		  
-/*j*/	        
+/*j*/
+cria uma vista com o numero de abstencoes de cada municipio
+
 	create or replace view exJ as
 		select m.descricao, count(e.voted) 
 			from municipio m
